@@ -29,4 +29,4 @@
 
     - name: Show the API response (for debugging purposes)
       ansible.builtin.debug:
-        var: "{{ api_response.json.results | to_nice_yaml }}"
+        var: "{{ api_response.json.results | to_nice_yaml(indent=2, width=80) }}"

@@ -16,10 +16,14 @@
         validate_certs: false  # Disable cert validation if you're using self-signed certificates
       register: api_response
 
+    - name: Show the API response (for debugging purposes)
+      ansible.builtin.debug:
+        var: api_response
+
     - name: Save API response to a YAML file
       ansible.builtin.copy:
         content: "{{ api_response | to_nice_yaml }}"
-        dest: "/path/to/output/api_response.yaml"
+        dest: "/home/ec2-user/api_response.yaml"
         mode: '0644'  # Set permissions to read/write for owner, read for others
 
     - name: Show the API response (for debugging purposes)

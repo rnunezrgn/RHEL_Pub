@@ -7,9 +7,11 @@
       ansible.builtin.uri:
         url: "https://{{ server_name }}/api/v2/roles"
         method: GET
+        user: admin
+        password: "{{ my_password }}"
         return_content: true  # Ensure the response content is returned
-        headers:
-          Authorization: "Bearer YOUR_ACCESS_TOKEN"  # If authentication is required
+      #  headers:
+      #    Authorization: "Bearer YOUR_ACCESS_TOKEN"  # If authentication is required
         validate_certs: false  # Disable cert validation if you're using self-signed certificates
       register: api_response
 

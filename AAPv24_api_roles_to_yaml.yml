@@ -1,0 +1,24 @@
+---
+- name: Get roles from the server API and save response to YAML file
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Send GET request to the API endpoint
+      ansible.builtin.uri:
+        url: "https://localhost/api/v2/roles"
+        method: GET
+        return_content: true  # Ensure the response content is returned
+        headers:
+          Authorization: "Bearer YOUR_ACCESS_TOKEN"  # If authentication is required
+        validate_certs: false  # Disable cert validation if you're using self-signed certificates
+      register: api_response
+
+    - name: Save API response to a YAML file
+      ansible.builtin.copy:
+        content: "{{ api_response | to_nice_yaml }}"
+        dest: "/path/to/output/api_response.yaml"
+        mode: '0644'  # Set permissions to read/write for owner, read for others
+
+    - name: Show the API response (for debugging purposes)
+      ansible.builtin.debug:
+        var: api_response

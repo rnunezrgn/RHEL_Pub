@@ -18,7 +18,7 @@
 
     - name: Show the API response (for debugging purposes)
       ansible.builtin.debug:
-        var: api_response
+        var: api_response.json
 
     - name: Save API response to a YAML file
       ansible.builtin.copy:

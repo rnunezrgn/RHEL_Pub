@@ -9,6 +9,7 @@
         method: GET
         user: admin
         password: "{{ my_password }}"
+        force_basic_auth: true
         return_content: true  # Ensure the response content is returned
       #  headers:
       #    Authorization: "Bearer YOUR_ACCESS_TOKEN"  # If authentication is required

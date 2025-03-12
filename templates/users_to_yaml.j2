@@ -1,0 +1,17 @@
+---
+aap_user_accounts:
+{% for user in api_response.json.results %}
+  created: {{ user.created }}
+  modified: {{ user.modified }}
+  username: {{ user.username }}
+  first_name: {{ user.first_name }}
+  last_name: {{ user.last_name }}
+  email: {{ user.email }}
+  is_superuser: {{ user.is_superuser }}
+  is_system_auditor: {{ user.is_system_auditor }}
+  ldap_dn: {{ user.ldap_dn }}
+  last_login: {{ user.last_login }}
+  external_account: {{ user.external_account }}
+  auth: {{ user.auth }}
+{% endfor %}
+...

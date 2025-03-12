@@ -5,7 +5,7 @@
   tasks:
     - name: Send GET request to the API endpoint
       ansible.builtin.uri:
-        url: "https://{{ server_name }}/api/v2/users"
+        url: "https://{{ server_name }}{{ target_url }}users"
         method: GET
         user: admin
         password: "{{ my_password }}"

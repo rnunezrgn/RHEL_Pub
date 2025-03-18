@@ -58,7 +58,7 @@
         clone: yes
         update: yes
         version: "{{ branch }}"
-      no_log: true
+#      no_log: true
 
     - name: Commit changes to the repository
       ansible.builtin.command:

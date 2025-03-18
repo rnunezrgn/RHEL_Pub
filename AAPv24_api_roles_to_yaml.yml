@@ -68,7 +68,7 @@
         
     - name: Make changes to files (if necessary)
       ansible.builtin.copy:
-        dest: "{{ repo_dest }}"  # Replace with the file you want to create or modify
+        dest: "{{ files_to_push }}"  # Replace with the file you want to create or modify
         content: "This is a new file created by Ansible"
         mode: '0644'
 

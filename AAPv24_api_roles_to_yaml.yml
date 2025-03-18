@@ -33,6 +33,7 @@
   vars:
     repo_url: "git@github.com:rnunezrgn/RHEL_Pub.git"
     repo_dest: "/home/ec2-user/aap_user_accounts.yaml"
+    git_token: ""
     commit_message: "Adding new AAP User collection accounts format"
     files_to_push:
       - "/files/aap_user_accounts.yaml"
@@ -50,20 +51,26 @@
         state: present
       when: ansible_os_family == "RedHat"
 
-    - name: Clone the Git repository
+    - name: Clone the Git repository using token
       ansible.builtin.git:
-        repo: "{{ repo_url }}"
-        dest: "{{ repo_dest }}"
-        clone: true
-        update: true
+        repo: "https://{{ git_token }}@{{ repo_url | regex_replace('https://', '') }}"
+        dest: "{{ repo_dir }}"
+        clone: yes
+        update: yes
+        version: "{{ branch }}"
+      no_log: true
 
-    - name: Copy files to the Git repository
-      ansible.builtin.copy:
-        src: "{{ item }}"
-        dest: "{{ repo_dest }}/{{ item | basename }}"
-      with_items: "{{ files_to_push }}"
-      notify:
-        - Commit and push changes
+    - name: Commit changes to the repository
+      ansible.builtin.command:
+        cmd: git commit -am "{{ commit_message }}"
+        chdir: "{{ repo_dest }}"
+      when: ansible_facts['changed']
+
+    - name: Push changes to the Git repository
+      ansible.builtin.command:
+        cmd: git push origin "{{ branch }}"
+        chdir: "{{ repo_dest }}"
+      when: ansible_facts['changed']
         
   handlers:
     - name: Commit and push changes

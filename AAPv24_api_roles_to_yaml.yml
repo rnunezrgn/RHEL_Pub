@@ -70,6 +70,6 @@
 
     - name: Push changes to the Git repository
       ansible.builtin.command:
-        cmd: git push origin main 
+        cmd: git push -u origin --force --all 
  #"{{ branch }}"
         chdir: "{{ repo_dest }}"

@@ -64,17 +64,11 @@
         dest: "/home/ec2-user/files/aap_user_accounts.yaml"
         src: "/tmp/aap_user_accounts.yaml"
         mode: '0644'
-        
-#    - name: Make changes to files (if necessary)
-#      ansible.builtin.copy:
-#        dest: "{{ file_to_push }}"  # Replace with the file you want to create or modify
-#        content: "This is a new file created by Ansible"
-#        mode: '0644'
 
     - name: Commit changes to the repository
       ansible.builtin.command:
         cmd: git commit -am "{{ commit_message }}"
-        chdir: "{{ repo_dest }}"
+        chdir: "{{ repo_dest }}{{ file_to_push }}"
  #     when: ansible_facts['changed']
 
     - name: Push changes to the Git repository

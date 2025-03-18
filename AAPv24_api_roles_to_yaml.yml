@@ -16,14 +16,8 @@
         validate_certs: false  # Disable cert validation if you're using self-signed certificates
       register: api_response
 
-    - name: Show the API response (for debugging purposes)
-      ansible.builtin.debug:
-        var: api_response.json
-
     - name: Save API response to a YAML file
       ansible.builtin.copy:
-        #content: "{{ api_response.json.results | to_nice_yaml }}"
-        #dest: "/tmp/api_response.yaml"
         src: templates/users_to_yaml.j2
         dest: /tmp/aap_user_accounts.yaml
         mode: '0644'  # Set permissions to read/write for owner, read for others
@@ -35,9 +29,47 @@
 - name: Copy YAML output to remote server
   hosts: ec2-54-215-176-197.us-west-1.compute.amazonaws.com
   gather_facts: true
+  vars:
+    repo_url: "git@github.com:rnunezrgn/RHEL_Pub.git"
+    repo_dest: "/home/ec2-user/aap_user_accounts.yaml"
+    commit_message: "Adding new AAP User collection accounts format"
+    files_to_push:
+      - "/files/aap_user_accounts.yaml"
 
   tasks:
-    - name: Copy api_response.yaml to remote server
+    - name: Copy aap_user_accounts.yaml to remote server.
       ansible.builtin.copy:
         dest: "/home/ec2-user/aap_user_accounts.yaml"
         src: "/tmp/aap_user_accounts.yaml"
+        mode: '0644'
+
+    - name: Ensure Git is installed.
+      ansible.builtin.dnf:
+        name: git
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Clone the Git repository
+      ansible.builtin.git:
+        repo: "{{ repo_url }}"
+        dest: "{{ repo_dest }}"
+        clone: true
+        update: true
+
+    - name: Copy files to the Git repository
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ repo_dest }}/{{ item | basename }}"
+      with_items: "{{ files_to_push }}"
+      notify:
+        - Commit and push changes
+        
+  handlers:
+    - name: Commit and push changes
+      ansible.builtin.shell: |
+        cd {{ repo_dest }}
+        git add .
+        git commit -m "{{ commit_message }}"
+        git push origin master
+      args:
+        chdir: "{{ repo_dest }}"

@@ -24,7 +24,7 @@
         
     - name: Show the API response (for debugging purposes)
       ansible.builtin.debug:
-        var: api_response.json
+        var: api_response.json.results
 
     - name: Show the API response (for debugging purposes)
       ansible.builtin.debug:

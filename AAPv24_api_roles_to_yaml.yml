@@ -60,6 +60,12 @@
      #   version: "{{ branch }}"
     #  no_log: true
 
+    - name: Copy aap_user_accounts.yaml to remote server.
+      ansible.builtin.copy:
+        dest: "/home/ec2-user/files/aap_user_accounts.yaml"
+        src: "/tmp/aap_user_accounts.yaml"
+        mode: '0644'
+        
     - name: Make changes to files (if necessary)
       ansible.builtin.copy:
         dest: "{{ repo_dest }}{{files_to_push}}"  # Replace with the file you want to create or modify

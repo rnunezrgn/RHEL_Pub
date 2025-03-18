@@ -51,33 +51,3 @@
         state: present
       when: ansible_os_family == "RedHat"
 
-    - name: Clone the Git repository using token
-      ansible.builtin.git:
-        repo: "https://{{ git_token }}@{{ repo_url | regex_replace('https://', '') }}"
-        dest: "{{ repo_dest }}"
-        clone: yes
-        update: yes
-#        version: "{{ branch }}"
-#      no_log: true
-
-    - name: Commit changes to the repository
-      ansible.builtin.command:
-        cmd: git commit -am "{{ commit_message }}"
-        chdir: "{{ repo_dest }}"
-      when: ansible_facts['changed']
-
-    - name: Push changes to the Git repository
-      ansible.builtin.command:
-        cmd: git push origin "{{ branch }}"
-        chdir: "{{ repo_dest }}"
-      when: ansible_facts['changed']
-        
-  handlers:
-    - name: Commit and push changes
-      ansible.builtin.shell: |
-        cd {{ repo_dest }}
-        git add .
-        git commit -m "{{ commit_message }}"
-        git push origin master
-      args:
-        chdir: "{{ repo_dest }}"

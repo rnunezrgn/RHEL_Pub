@@ -75,10 +75,11 @@
       ansible.builtin.command:
         cmd: git commit -am "{{ commit_message }}"
         chdir: "{{ repo_dest }}"
-      when: ansible_facts['changed']
+ #     when: ansible_facts['changed']
 
     - name: Push changes to the Git repository
       ansible.builtin.command:
-        cmd: git push origin main #"{{ branch }}"
+        cmd: git push origin main 
+ #"{{ branch }}"
         chdir: "{{ repo_dest }}"
-      when: ansible_facts['changed']
+ #     when: ansible_facts['changed']

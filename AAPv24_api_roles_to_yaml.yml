@@ -40,4 +40,4 @@
     - name: Copy api_response.yaml to remote server
       ansible.builtin.copy:
         dest: "/home/ec2-user/aap_user_accounts.yaml"
-        src: "/tmp/api_response.yaml"
+        src: "/tmp/aap_user_accounts.yaml"

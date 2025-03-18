@@ -35,8 +35,7 @@
     repo_dest: "/home/ec2-user/files/"
     git_token: ""
     commit_message: "Adding new AAP User collection accounts format"
-    files_to_push:
-      - "aap_user_accounts.yaml"
+    file_to_push: "aap_user_accounts.yaml"
 
   tasks:
     - name: Copy aap_user_accounts.yaml to remote server.
@@ -66,11 +65,11 @@
         src: "/tmp/aap_user_accounts.yaml"
         mode: '0644'
         
-    - name: Make changes to files (if necessary)
-      ansible.builtin.copy:
-        dest: "{{ files_to_push }}"  # Replace with the file you want to create or modify
-        content: "This is a new file created by Ansible"
-        mode: '0644'
+#    - name: Make changes to files (if necessary)
+#      ansible.builtin.copy:
+#        dest: "{{ file_to_push }}"  # Replace with the file you want to create or modify
+#        content: "This is a new file created by Ansible"
+#        mode: '0644'
 
     - name: Commit changes to the repository
       ansible.builtin.command:

@@ -63,10 +63,10 @@
         src: "/tmp/aap_user_accounts.yaml"
         mode: '0644'
 
-    - name: Commit changes to the repository
-      ansible.builtin.command:
-        cmd: git commit -m "{{ commit_message }}"
-        chdir: "{{ repo_dest }}"
+ #   - name: Commit changes to the repository
+ #     ansible.builtin.command:
+ #       cmd: git commit -m "{{ commit_message }}"
+ #       chdir: "{{ repo_dest }}"
 
     - name: Push changes to the Git repository
       ansible.builtin.command:

@@ -76,4 +76,4 @@
       ansible.builtin.command:
         cmd: git push -u origin --force --all 
  #"{{ branch }}"
-        chdir: "{{ repo_dest }}{{ file_to_push }}"
+        chdir: "{{ repo_dest }}"

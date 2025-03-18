@@ -56,8 +56,6 @@
         dest: "{{ repo_dest }}"
         clone: yes
         update: yes
-     #   version: "{{ branch }}"
-    #  no_log: true
 
     - name: Copy aap_user_accounts.yaml to remote server.
       ansible.builtin.copy:
@@ -75,4 +73,3 @@
         cmd: git push origin main 
  #"{{ branch }}"
         chdir: "{{ repo_dest }}"
- #     when: ansible_facts['changed']

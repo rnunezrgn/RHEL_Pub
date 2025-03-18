@@ -29,6 +29,7 @@
 - name: Copy YAML output to remote server
   hosts: ec2-54-215-176-197.us-west-1.compute.amazonaws.com
   gather_facts: true
+  become: true
   vars:
     repo_url: "git@github.com:rnunezrgn/RHEL_Pub.git"
     repo_dest: "/home/ec2-user/aap_user_accounts.yaml"

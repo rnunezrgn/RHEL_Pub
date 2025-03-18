@@ -68,7 +68,7 @@
         
     - name: Make changes to files (if necessary)
       ansible.builtin.copy:
-        dest: "{{ repo_dest }}{{files_to_push}}"  # Replace with the file you want to create or modify
+        dest: "{{ repo_dest }}"  # Replace with the file you want to create or modify
         content: "This is a new file created by Ansible"
         mode: '0644'
 
@@ -80,6 +80,6 @@
 
     - name: Push changes to the Git repository
       ansible.builtin.command:
-        cmd: git push origin "{{ branch }}"
+        cmd: git push origin main #"{{ branch }}"
         chdir: "{{ repo_dest }}"
       when: ansible_facts['changed']

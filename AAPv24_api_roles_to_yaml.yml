@@ -21,6 +21,10 @@
         src: templates/users_to_yaml.j2
         dest: /tmp/aap_user_accounts.yaml
         mode: '0644'  # Set permissions to read/write for owner, read for others
+        
+    - name: Show the API response (for debugging purposes)
+      ansible.builtin.debug:
+        var: api_response.json
 
     - name: Show the API response (for debugging purposes)
       ansible.builtin.debug:

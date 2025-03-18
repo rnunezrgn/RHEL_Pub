@@ -65,8 +65,8 @@
 
     - name: Commit changes to the repository
       ansible.builtin.command:
-        cmd: git commit -am "{{ commit_message }}"
-        chdir: "{{ repo_dest }}"
+        cmd: git commit -m "{{ commit_message }}"
+#        chdir: "{{ repo_dest }}"
 
     - name: Push changes to the Git repository
       ansible.builtin.command:

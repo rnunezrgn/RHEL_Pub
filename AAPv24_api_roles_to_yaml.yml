@@ -36,7 +36,7 @@
     git_token: ""
     commit_message: "Adding new AAP User collection accounts format"
     files_to_push:
-      - "/files/aap_user_accounts.yaml"
+      - "aap_user_accounts.yaml"
 
   tasks:
     - name: Copy aap_user_accounts.yaml to remote server.

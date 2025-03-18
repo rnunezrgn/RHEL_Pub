@@ -54,10 +54,10 @@
     - name: Clone the Git repository using token
       ansible.builtin.git:
         repo: "https://{{ git_token }}@{{ repo_url | regex_replace('https://', '') }}"
-        dest: "{{ repo_dir }}"
+        dest: "{{ repo_dest }}"
         clone: yes
         update: yes
-        version: "{{ branch }}"
+#        version: "{{ branch }}"
 #      no_log: true
 
     - name: Commit changes to the repository

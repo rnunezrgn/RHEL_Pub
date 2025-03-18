@@ -32,7 +32,7 @@
   become: true
   vars:
     repo_url: "https://github.com/rnunezrgn/RHEL_Pub.git"
-    repo_dest: "/home/ec2-user/files"
+    repo_dest: "/home/ec2-user/files/"
     git_token: ""
     commit_message: "Adding new AAP User collection accounts format"
     files_to_push:

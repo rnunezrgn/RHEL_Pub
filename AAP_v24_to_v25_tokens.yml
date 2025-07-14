@@ -78,3 +78,16 @@
     - name: Show summary
       ansible.builtin.debug:
         msg: "Exported {{ all_tokens | length }} users' token data to {{ output_file }}"
+
+    - name: Read exported token file
+      ansible.builtin.slurp:
+        src: "{{ output_file }}"
+      register: exported_file
+
+    - name: Show exported user tokens on screen
+      ansible.builtin.debug:
+        msg: "{{ exported_file.content | b64decode | from_json }}"
+
+    - name: Show summary
+      ansible.builtin.debug:
+        msg: "Exported {{ all_tokens | length }} users' token data to {{ output_file }}"

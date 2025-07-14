@@ -1,0 +1,80 @@
+---
+- name: Export All User Tokens from AAP
+  hosts: localhost
+  gather_facts: false
+  vars:
+    aap_host: "https://aap.example.com"
+    admin_username: "admin"
+    admin_password: "your_admin_password"
+    output_file: "./aap_user_tokens_export.json"
+
+  tasks:
+    - name: Authenticate and get admin token
+      ansible.builtin.uri:
+        url: "{{ aap_host }}/api/v2/tokens/"
+        method: POST
+        user: "{{ admin_username }}"
+        password: "{{ admin_password }}"
+        force_basic_auth: true
+        status_code: 201
+        return_content: true
+        validate_certs: false
+      register: auth_response
+
+    - name: Set admin token fact
+      ansible.builtin.set_fact:
+        admin_token: "{{ auth_response.json.token }}"
+
+    - name: Get all users
+      ansible.builtin.uri:
+        url: "{{ aap_host }}/api/v2/users/?page_size=1000"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ admin_token }}"
+        return_content: true
+        validate_certs: false
+      register: users_response
+
+    - name: Set user list
+      ansible.builtin.set_fact:
+        user_list: "{{ users_response.json.results }}"
+
+    - name: Initialize token export list
+      ansible.builtin.set_fact:
+        all_tokens: []
+
+    - name: Get tokens for each user
+      vars:
+        user_id: "{{ item.id }}"
+        username: "{{ item.username }}"
+      loop: "{{ user_list }}"
+      loop_control:
+        label: "{{ item.username }}"
+      ansible.builtin.uri:
+        url: "{{ aap_host }}/api/v2/users/{{ user_id }}/tokens/"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ admin_token }}"
+        return_content: true
+        validate_certs: false
+      register: user_tokens
+      retries: 3
+      delay: 2
+      until: user_tokens.status == 200
+
+    - name: Combine all tokens
+      ansible.builtin.set_fact:
+        all_tokens: "{{ all_tokens + [{'username': item.item.username, 'tokens': item.json.results}] }}"
+      loop: "{{ user_tokens.results }}"
+      loop_control:
+        label: "{{ item.item.username }}"
+
+    - name: Export token data to JSON
+      ansible.builtin.copy:
+        dest: "{{ output_file }}"
+        content: "{{ all_tokens | to_nice_json }}"
+        mode: '0600'
+
+    - name: Show summary
+      ansible.builtin.debug:
+        msg: "Exported {{ all_tokens | length }} users' token data to {{ output_file }}"

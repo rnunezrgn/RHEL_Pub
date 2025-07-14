@@ -61,6 +61,10 @@
       retries: 3
       delay: 2
       until: user_tokens.status == 200
+      
+    - name: Show user_tokens variable output
+      ansible.builtin.debug:
+        msg: "All variables {{ user_tokens }}"
 
     - name: Combine all tokens
       ansible.builtin.set_fact:

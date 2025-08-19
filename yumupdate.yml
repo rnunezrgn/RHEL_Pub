@@ -1,6 +1,6 @@
 ---
 - name: Upgrading all Modules to Latest
-  hosts: all
+  hosts: rhel9k8s
   gather_facts: False
 
   tasks:

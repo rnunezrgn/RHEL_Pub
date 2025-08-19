@@ -8,3 +8,9 @@
       ansible.builtin.dnf:
         name: '*'
         state: latest
+
+    - name: Install HTTPD package
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+...

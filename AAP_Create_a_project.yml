@@ -1,0 +1,44 @@
+---
+- name: Create a Project in AAP Controller
+  hosts: localhost
+  gather_facts: false
+  vars:
+    controller_host: "https://aap-controller.example.com"
+    controller_user: "your_admin_user"
+    controller_pass: "your_admin_password"
+
+    # Customize these
+    project_name: "Webserver - Dev"
+    organization_id: 1
+    scm_url: "https://github.com/your-org/webserver.git"
+    scm_branch: "dev"
+    scm_type: "git"
+    scm_credential_id: null  # Set to integer if using credentials (e.g., 5)
+
+  tasks:
+    - name: Create project in AAP Controller
+      uri:
+        url: "{{ controller_host }}/api/v2/projects/"
+        method: POST
+        user: "{{ controller_user }}"
+        password: "{{ controller_pass }}"
+        force_basic_auth: true
+        validate_certs: false
+        headers:
+          Content-Type: application/json
+        body_format: json
+        body:
+          name: "{{ project_name }}"
+          description: "Created via Ansible"
+          organization: "{{ organization_id }}"
+          scm_type: "{{ scm_type }}"
+          scm_url: "{{ scm_url }}"
+          scm_branch: "{{ scm_branch }}"
+          scm_update_on_launch: true
+          scm_clean: true
+          credential: "{{ scm_credential_id | default(omit) }}"
+      register: project_creation
+
+    - name: Show result
+      debug:
+        var: project_creation.json

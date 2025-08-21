@@ -1,0 +1,59 @@
+- name: Dynamically update job template's project based on webhook branch
+  hosts: localhost
+  gather_facts: false
+  vars:
+    controller_host: "https://your-aap-controller.example.com"
+    controller_user: "your_user"
+    controller_pass: "your_pass"
+    job_template_id: 42
+  tasks:
+
+    - name: Extract Git branch from webhook
+      set_fact:
+        branch_name: "{{ webhook_payload.ref | regex_replace('^refs/heads/', '') }}"
+
+    - name: Get all projects
+      uri:
+        url: "{{ controller_host }}/api/v2/projects/"
+        method: GET
+        user: "{{ controller_user }}"
+        password: "{{ controller_pass }}"
+        force_basic_auth: true
+        validate_certs: false
+        return_content: true
+      register: project_list
+
+    - name: Find matching project by branch name
+      set_fact:
+        matched_project: "{{ item }}"
+      loop: "{{ project_list.json.results }}"
+      when: item.scm_branch == branch_name
+      register: project_match_result
+
+    - name: Fail if no matching project found
+      fail:
+        msg: "No project found with scm_branch = {{ branch_name }}"
+      when: project_match_result.results | selectattr('matched_project', 'defined') | list | length == 0
+
+    - name: Extract matched project ID
+      set_fact:
+        matched_project_id: "{{ project_match_result.results | selectattr('matched_project', 'defined') | map(attribute='matched_project.id') | first }}"
+
+    - name: PATCH job template to use matched project
+      uri:
+        url: "{{ controller_host }}/api/v2/job_templates/{{ job_template_id }}/"
+        method: PATCH
+        user: "{{ controller_user }}"
+        password: "{{ controller_pass }}"
+        force_basic_auth: true
+        validate_certs: false
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          project: "{{ matched_project_id }}"
+      register: patch_result
+
+    - name: Confirm update
+      debug:
+        msg: "Project for job template {{ job_template_id }} updated to ID {{ matched_project_id }}"

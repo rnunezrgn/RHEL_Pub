@@ -1,0 +1,23 @@
+- name: Install Apache
+  ansible.builtin.dnf:
+    name: "{{ apache_packages }}"
+    state: present
+
+- name: Start and enable Apache
+  ansible.builtin.service:
+    name: httpd
+    state: started
+    enabled: true
+
+- name: Deploy index.html
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+  notify: restart apache
+
+- name: Allow HTTP through firewalld
+  ansible.posix.firewalld:
+    service: http
+    permanent: true
+    state: enabled
+    immediate: yes

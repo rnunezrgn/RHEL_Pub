@@ -1,0 +1,13 @@
+[dev]
+dev-web1 ansible_host=192.168.10.11
+
+[test]
+test-web1 ansible_host=192.168.20.11
+
+
+[qa]
+qa-web1 ansible_host=192.168.25.11
+
+
+[prod]
+prod-web1 ansible_host=192.168.30.11

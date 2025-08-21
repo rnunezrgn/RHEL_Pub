@@ -17,7 +17,7 @@
 
   tasks:
     - name: Create project in AAP Controller
-      uri:
+      ansible.builtin.uri:
         url: "{{ controller_host }}/api/v2/projects/"
         method: POST
         user: "{{ controller_user }}"

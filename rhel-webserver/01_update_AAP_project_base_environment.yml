@@ -1,0 +1,36 @@
+- name: Update Ansible Controller project for Job Template to select different GitHub branch
+  hosts: localhost
+  gather_facts: false
+  vars:
+    controller_host: "https://your-aap.example.com"
+    api_user: "your_username"
+    api_pass: "your_password"
+    template_id: 42  # <-- Job Template ID to update
+    environment: "{{ environment }}"  # From survey
+    project_ids:
+      dev: 15
+      test: 16
+      qa: 17
+      prod: 18
+  tasks:
+    - name: Set correct project ID based on environment
+      set_fact:
+        new_project_id: "{{ project_ids[environment] }}"
+
+    - name: Update Job Template with new project
+      uri:
+        url: "{{ controller_host }}/api/v2/job_templates/{{ template_id }}/"
+        method: PATCH
+        user: "{{ api_user }}"
+        password: "{{ api_pass }}"
+        force_basic_auth: true
+        validate_certs: false
+        headers:
+          Content-Type: application/json
+        body_format: json
+        body:
+          project: "{{ new_project_id }}"
+      register: update_result
+
+    - debug:
+        msg: "Project updated successfully: {{ update_result.status }}"

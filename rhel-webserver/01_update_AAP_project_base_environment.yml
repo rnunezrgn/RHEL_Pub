@@ -11,6 +11,10 @@
     project_ids: ""  # dev: 15, test: 16, qa: 17, prod: 18
 
   tasks:
+    - name: Debug the environment variable
+      ansible.builtin.debug:
+        msg: "Environment variable: {{ environment }}"
+
     - name: Update Job Template with new project
       ansible.builtin.uri:
         url: "{{ controller_host }}/api/controller/v2/projects/{{ project_id }}/"
@@ -24,7 +28,7 @@
         body_format: json
         body: |
           {
-            scm_branch: "{{ environment }}"
+            "scm_branch": "{{ environment }}"
           }
       register: update_result
 

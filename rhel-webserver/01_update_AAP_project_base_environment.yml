@@ -5,7 +5,7 @@
     controller_host: "https://your-aap.example.com"
     api_user: "your_username"
     api_pass: "your_password"
-    template_id: 42  # <-- Job Template ID to update
+    template_id: 41  # <-- Job Template ID to update
     environment: "{{ environment }}"  # From survey
     project_ids:
       dev: 15

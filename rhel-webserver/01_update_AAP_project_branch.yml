@@ -1,5 +1,5 @@
 ---
-- name: Update Ansible Controller SMC for Job Template to select different GitHub branch
+- name: Update Ansible Controller SMC to select different GitHub branch
   hosts: localhost
   gather_facts: false
   vars:

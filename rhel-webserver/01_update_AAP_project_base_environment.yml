@@ -1,3 +1,4 @@
+---
 - name: Update Ansible Controller project for Job Template to select different GitHub branch
   hosts: localhost
   gather_facts: false
@@ -7,18 +8,15 @@
     api_pass: "your_password"
     template_id: 41  # <-- Job Template ID to update
     environment: ""  # Branch from survey "main", "test" or "rnunez"
-    project_ids:
-      dev: 15
-      test: 16
-      qa: 17
-      prod: 18
+    project_ids: ""  # dev: 15, test: 16, qa: 17, prod: 18
+    
   tasks:
     - name: Set correct project ID based on environment
-      set_fact:
+      ansible.builtin.set_fact:
         new_project_id: "{{ project_ids[environment] }}"
 
     - name: Update Job Template with new project
-      uri:
+      ansible.builtin.uri:
         url: "{{ controller_host }}/api/v2/job_templates/{{ template_id }}/"
         method: PATCH
         user: "{{ api_user }}"
@@ -33,5 +31,6 @@
           scm_branch: "{{ environment }}"
       register: update_result
 
-    - debug:
+    - name: Debug the project update results
+      ansible.builtin.debug:
         msg: "Project updated successfully: {{ update_result.status }}"

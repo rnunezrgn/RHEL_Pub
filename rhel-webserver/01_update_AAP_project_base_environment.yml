@@ -30,7 +30,7 @@
         body_format: json
         body:
         #  project: "{{ new_project_id }}"
-          scm_branch: "rnunez"
+          scm_branch: "{{ environment }}"
       register: update_result
 
     - debug:

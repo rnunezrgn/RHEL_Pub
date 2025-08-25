@@ -6,14 +6,14 @@
     controller_host: "https://your-aap.example.com"
     api_user: "your_username"
     api_pass: "your_password"
-    template_id: 41  # <-- Job Template ID to update
+    project_id: 41  # <-- Job Template ID to update
     environment: ""  # Branch from survey "main", "test" or "rnunez"
     project_ids: ""  # dev: 15, test: 16, qa: 17, prod: 18
 
   tasks:
     - name: Update Job Template with new project
       ansible.builtin.uri:
-        url: "{{ controller_host }}/api/controller/v2/projects/{{ template_id }}/"
+        url: "{{ controller_host }}/api/controller/v2/projects/{{ project_id }}/"
         method: PATCH
         user: "{{ api_user }}"
         password: "{{ api_pass }}"
@@ -22,9 +22,11 @@
         headers:
           Content-Type: application/json
         body_format: json
-        body:
+        body: |
         #  project: "{{ new_project_id }}"
-          scm_branch: "{{ environment }}"
+          {
+            "scm_branch": "{{ environment }}"
+          }
       register: update_result
 
     - name: Debug the project update results

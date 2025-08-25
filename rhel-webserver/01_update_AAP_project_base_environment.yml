@@ -7,13 +7,13 @@
     api_user: "your_username"
     api_pass: "your_password"
     project_id: 41  # <-- Job Template ID to update
-    environment: ""  # Branch from survey "main", "test" or "rnunez"
+    my_branch: ""  # Branch from survey "main", "test" or "rnunez"
     project_ids: ""  # dev: 15, test: 16, qa: 17, prod: 18
 
   tasks:
     - name: Debug the environment variable
       ansible.builtin.debug:
-        msg: "Environment variable: {{ environment }}"
+        msg: "Environment variable: {{ my_branch }}"
 
     - name: Update Job Template with new project
       ansible.builtin.uri:
@@ -28,7 +28,7 @@
         body_format: json
         body: |
           {
-            "scm_branch": "{{ environment }}"
+            "scm_branch": "{{ my_branch }}"
           }
       register: update_result
 

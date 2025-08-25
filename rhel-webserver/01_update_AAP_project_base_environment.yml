@@ -24,7 +24,7 @@
         body_format: json
         body: |
           {
-            "scm_branch": "{{ environment }}"
+            scm_branch: "{{ environment }}"
           }
       register: update_result
 

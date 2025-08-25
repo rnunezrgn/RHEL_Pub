@@ -11,9 +11,9 @@
     project_ids: ""  # dev: 15, test: 16, qa: 17, prod: 18
 
   tasks:
-    - name: Set correct project ID based on environment
-      ansible.builtin.set_fact:
-        new_project_id: "{{ project_ids[environment] }}"
+   # - name: Set correct project ID based on environment
+   #   ansible.builtin.set_fact:
+   #     new_project_id: "{{ project_ids[environment] }}"
 
     - name: Update Job Template with new project
       ansible.builtin.uri:

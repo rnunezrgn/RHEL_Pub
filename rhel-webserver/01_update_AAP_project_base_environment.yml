@@ -6,7 +6,7 @@
     api_user: "your_username"
     api_pass: "your_password"
     template_id: 41  # <-- Job Template ID to update
-    environment: "{{ environment }}"  # From survey
+    environment: ""  # Branch from survey "main", "test" or "rnunez"
     project_ids:
       dev: 15
       test: 16

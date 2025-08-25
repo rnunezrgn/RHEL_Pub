@@ -14,7 +14,7 @@
     - name: Update Job Template with new project
       ansible.builtin.uri:
         url: "{{ controller_host }}/api/controller/v2/projects/{{ template_id }}/"
-        method: PUT
+        method: PATCH
         user: "{{ api_user }}"
         password: "{{ api_pass }}"
         force_basic_auth: true

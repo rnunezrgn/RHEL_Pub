@@ -64,9 +64,12 @@
       ansible.builtin.uri:
         url: "{{ controller_host }}api/controller/v2/projects/"
         method: POST
-        headers:
-          Authorization: "Bearer {{ tower_token }}"
-          Content-Type: "application/json"
+#        headers:
+#          Authorization: "Bearer {{ tower_token }}"
+#          Content-Type: "application/json"
+        user: "{{ api_user }}"
+        password: "{{ api_pass }}"
+        force_basic_auth: true
         body_format: json
         body:
           name: "{{ project_name }}"
@@ -87,8 +90,11 @@
             (project_exists | ternary(update_result.json.id, create_result.json.id))
           }}/update/
         method: POST
-        headers:
-          Authorization: "Bearer {{ tower_token }}"
+#        headers:
+#          Authorization: "Bearer {{ tower_token }}"
+        user: "{{ api_user }}"
+        password: "{{ api_pass }}"
+        force_basic_auth: true
         status_code: 202
         validate_certs: false
       register: sync_trigger

@@ -1,0 +1,102 @@
+---
+- name: Manage Ansible Project based on GitHub branch webhook
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+#     tower_token: "{{ lookup('env', 'TOWER_TOKEN') }}"  # or define manually
+    scm_url: "https://github.com/your-org/your-repo.git"
+    scm_credential_id: 3
+    organization_id: 1
+    controller_host: "https://your-aap.example.com"
+    api_user: "your_username"
+    api_pass: "your_password"
+    project_id: 41  # <-- Job Template ID to update
+    my_branch: ""  # Branch from survey "main", "test" or "rnunez"
+
+  tasks:
+#    - name: Fail early if not a branch creation event
+#      fail:
+#        msg: "Not a branch creation event"
+#      when: awx_webhook_payload.ref_type is defined and awx_webhook_payload.ref_type != "branch"
+
+    - name: Extract branch name from webhook
+      ansible.builtin.set_fact:
+        branch_name: "{{ awx_webhook_payload.ref }}"
+        project_name: "Project-{{ awx_webhook_payload.ref }}"
+
+    - name: Check if project with this branch already exists
+      ansible.builtin.uri:
+        url: "{{ controller_host }}api/controller/v2/projects/?name={{ project_name }}"
+        method: GET
+#        headers:
+#          Authorization: "Bearer {{ tower_token }}"
+        user: "{{ api_user }}"
+        password: "{{ api_pass }}"
+        force_basic_auth: true
+        validate_certs: false
+        return_content: yes
+      register: existing_project
+
+    - name: Set project_exists flag
+      ansible.builtin.set_fact:
+        project_exists: "{{ existing_project.json.count > 0 }}"
+
+    - name: Update project if it already exists (change scm_branch)
+      when: project_exists
+      ansible.builtin.uri:
+        url: "{{ controller_host }}api/controller/v2/projects/{{ existing_project.json.results[0].id }}/"
+        method: PATCH
+#        headers:
+#          Authorization: "Bearer {{ tower_token }}"
+#          Content-Type: "application/json"
+        user: "{{ api_user }}"
+        password: "{{ api_pass }}"
+        force_basic_auth: true
+        body_format: json
+        body:
+          scm_branch: "{{ branch_name }}"
+        validate_certs: false
+      register: update_result
+
+    - name: Create new project if it does not exist
+      when: not project_exists
+      uri:
+        url: "{{ tower_host }}/api/v2/projects/"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ tower_token }}"
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          name: "{{ project_name }}"
+          description: "Auto-created project for branch {{ branch_name }}"
+          organization: "{{ organization_id }}"
+          scm_type: "git"
+          scm_url: "{{ scm_url }}"
+          scm_branch: "{{ branch_name }}"
+          credential: "{{ scm_credential_id }}"
+          scm_update_on_launch: true
+        validate_certs: false
+      register: create_result
+
+    - name: Trigger project sync (whether updated or created)
+      uri:
+        url: >-
+          {{ tower_host }}/api/v2/projects/{{
+            (project_exists | ternary(update_result.json.id, create_result.json.id))
+          }}/update/
+        method: POST
+        headers:
+          Authorization: "Bearer {{ tower_token }}"
+        status_code: 202
+        validate_certs: false
+      register: sync_trigger
+
+    - name: Report status
+      debug:
+        msg: >-
+          {{
+            'Updated existing project and triggered sync.' if project_exists else
+            'Created new project and triggered sync.'
+          }}

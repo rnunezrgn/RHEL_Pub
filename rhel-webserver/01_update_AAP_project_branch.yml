@@ -8,7 +8,6 @@
     api_pass: "your_password"
     project_id: 41  # <-- Job Template ID to update
     my_branch: ""  # Branch from survey "main", "test" or "rnunez"
-    project_ids: ""  # dev: 15, test: 16, qa: 17, prod: 18
 
   tasks:
     - name: Debug the environment variable

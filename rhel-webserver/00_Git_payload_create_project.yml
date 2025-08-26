@@ -61,8 +61,8 @@
 
     - name: Create new project if it does not exist
       when: not project_exists
-      uri:
-        url: "{{ tower_host }}/api/v2/projects/"
+      ansible.builtin.uri:
+        url: "{{ controller_host }}api/controller/v2/projects/"
         method: POST
         headers:
           Authorization: "Bearer {{ tower_token }}"
@@ -81,9 +81,9 @@
       register: create_result
 
     - name: Trigger project sync (whether updated or created)
-      uri:
+      ansible.builtin.uri:
         url: >-
-          {{ tower_host }}/api/v2/projects/{{
+          {{ controller_host }}api/controller/v2/projects/{{
             (project_exists | ternary(update_result.json.id, create_result.json.id))
           }}/update/
         method: POST
@@ -94,7 +94,7 @@
       register: sync_trigger
 
     - name: Report status
-      debug:
+      ansible.builtin.debug:
         msg: >-
           {{
             'Updated existing project and triggered sync.' if project_exists else

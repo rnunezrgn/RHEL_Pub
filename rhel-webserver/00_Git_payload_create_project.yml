@@ -15,6 +15,10 @@
     my_branch: ""     # Branch from survey "main", "test" or "rnunez"
 
   tasks:
+    - name: Report status
+      ansible.builtin.debug:
+        msg: "This is the payload info: {{ awx_webhook_payload.ref }}"
+
     - name: Set branch name from webhook or default to my_branch
       ansible.builtin.set_fact:
         branch_name: "{{ awx_webhook_payload.ref | default(my_branch) }}"

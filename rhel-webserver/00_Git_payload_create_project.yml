@@ -6,7 +6,7 @@
   vars:
 #     tower_token: "{{ lookup('env', 'TOWER_TOKEN') }}"  # or define manually
     scm_url: "https://github.com/your-org/your-repo.git"
-    scm_credential_id: 3
+#    scm_credential_id: 3
     organization_id: 1
     controller_host: "https://your-aap.example.com"
     api_user: "your_username"
@@ -78,7 +78,7 @@
           scm_type: "git"
           scm_url: "{{ scm_url }}"
           scm_branch: "{{ branch_name }}"
-          credential: "{{ scm_credential_id }}"
+ #         credential: "{{ scm_credential_id }}"
           scm_update_on_launch: true
         validate_certs: false
       register: create_result

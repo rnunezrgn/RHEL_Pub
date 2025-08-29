@@ -15,10 +15,10 @@
     my_branch: ""  # Branch from survey "main", "test" or "rnunez"
 
   tasks:
-#    - name: Fail early if not a branch creation event
-#      fail:
-#        msg: "Not a branch creation event"
-#      when: awx_webhook_payload.ref_type is defined and awx_webhook_payload.ref_type != "branch"
+    - name: Fail early if not a branch creation event
+      fail:
+        msg: "Not a branch creation event"
+      when: awx_webhook_payload.ref_type is defined and awx_webhook_payload.ref_type != "branch"
 
     - name: Extract branch name from webhook
       ansible.builtin.set_fact:

@@ -89,6 +89,7 @@
  #         credential: "{{ scm_credential_id }}"
           scm_update_on_launch: true
         validate_certs: false
+        status_code: [200, 201]  # 👈 This line tells Ansible what to accept
       register: create_result
 
     - name: Trigger project sync (whether updated or created)

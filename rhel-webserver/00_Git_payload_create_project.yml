@@ -15,6 +15,11 @@
     my_branch: ""  # Branch from survey "main", "test" or "rnunez"
 
   tasks:
+    - name: Set branch name from webhook or default to my_branch
+      ansible.builtin.set_fact:
+        branch_name: "{{ awx_webhook_payload.ref | default(my_branch) }}"
+        project_name: "Project-{{ awx_webhook_payload.ref | default(my_branch) }}"
+        
     - name: Fail early if not a branch creation event
       fail:
         msg: "Not a branch creation event"

@@ -41,6 +41,10 @@
       ansible.builtin.set_fact:
         branch_name: "{{ awx_webhook_payload.ref | regex_replace('^refs/heads/', '') }}"
 
+    - name: Sanitize branch name (strip 'refs/heads/')
+      ansible.builtin.set_fact:
+        project_name: "Project-{{ branch_name }}"
+
     - name: Check if project with this branch already exists
       ansible.builtin.uri:
         url: "{{ controller_host }}/api/controller/v2/projects/?name={{ project_name }}"

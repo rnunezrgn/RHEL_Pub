@@ -12,8 +12,7 @@
     api_user: "your_username"
     api_pass: "your_password"
     project_id: 41  # <-- Job Template ID to update
-    my_branch: ""  # Branch from survey "main", "test" or "rnunez"
-    awx_webhook_payload.ref: ""
+    my_branch: ""   # Branch from survey "main", "test" or "rnunez"
 
   tasks:
     - name: Set branch name from webhook or default to my_branch

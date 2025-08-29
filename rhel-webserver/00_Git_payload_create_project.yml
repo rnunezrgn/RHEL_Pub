@@ -19,10 +19,6 @@
       ansible.builtin.debug:
         msg: "This is the payload info: {{ awx_webhook_payload.ref }}"
 
-    - name: Sanitize branch name (strip 'refs/heads/')
-      ansible.builtin.set_fact:
-        branch_name: "{{ awx_webhook_payload.ref | regex_replace('^refs/heads/', '') }}"
-
     - name: Set branch name from webhook or default to my_branch
       ansible.builtin.set_fact:
         branch_name: "{{ awx_webhook_payload.ref | default(my_branch) }}"
@@ -40,6 +36,10 @@
         - awx_webhook_payload is defined
         - awx_webhook_payload.ref_type is defined
         - awx_webhook_payload.ref_type != "branch"
+
+    - name: Sanitize branch name (strip 'refs/heads/')
+      ansible.builtin.set_fact:
+        branch_name: "{{ awx_webhook_payload.ref | regex_replace('^refs/heads/', '') }}"
 
     - name: Check if project with this branch already exists
       ansible.builtin.uri:

@@ -35,7 +35,7 @@
 
     - name: Check if project with this branch already exists
       ansible.builtin.uri:
-        url: "{{ controller_host }}api/controller/v2/projects/?name={{ project_name }}"
+        url: "{{ controller_host }}/api/controller/v2/projects/?name={{ project_name }}"
         method: GET
 #        headers:
 #          Authorization: "Bearer {{ tower_token }}"
@@ -53,7 +53,7 @@
     - name: Update project if it already exists (change scm_branch)
       when: project_exists
       ansible.builtin.uri:
-        url: "{{ controller_host }}api/controller/v2/projects/{{ existing_project.json.results[0].id }}/"
+        url: "{{ controller_host }}/api/controller/v2/projects/{{ existing_project.json.results[0].id }}/"
         method: PATCH
 #        headers:
 #          Authorization: "Bearer {{ tower_token }}"
@@ -94,7 +94,7 @@
     - name: Trigger project sync (whether updated or created)
       ansible.builtin.uri:
         url: >-
-          {{ controller_host }}api/controller/v2/projects/{{
+          {{ controller_host }}/api/controller/v2/projects/{{
             (project_exists | ternary(update_result.json.id, create_result.json.id))
           }}/update/
         method: POST

@@ -12,7 +12,7 @@
     api_user: "your_username"
     api_pass: "your_password"
     project_id: 41    # <-- Job Template ID to update
-    my_branch: ""     # Branch from survey "main", "test" or "rnunez"
+    my_branch: ""     # Branch from survey "main", "test" or "rnunez" hhghghg
 
   tasks:
     - name: Report status

@@ -20,16 +20,19 @@
       ansible.builtin.set_fact:
         branch_name: "{{ awx_webhook_payload.ref | default(my_branch) }}"
         project_name: "Project-{{ awx_webhook_payload.ref | default(my_branch) }}"
-        
-    - name: Fail early if not a branch creation event
+
+    - name: Fail if no branch name was set
+      fail:
+        msg: "No branch name provided. Run via webhook or pass -e my_branch=branch_name"
+      when: branch_name == ""
+
+    - name: Fail early if not a branch creation event (only if webhook was used)
       fail:
         msg: "Not a branch creation event"
-      when: awx_webhook_payload.ref_type is defined and awx_webhook_payload.ref_type != "branch"
-
-    - name: Extract branch name from webhook
-      ansible.builtin.set_fact:
-        branch_name: "{{ awx_webhook_payload.ref }}"
-        project_name: "Project-{{ awx_webhook_payload.ref }}"
+      when:
+        - awx_webhook_payload is defined
+        - awx_webhook_payload.ref_type is defined
+        - awx_webhook_payload.ref_type != "branch"
 
     - name: Check if project with this branch already exists
       ansible.builtin.uri:

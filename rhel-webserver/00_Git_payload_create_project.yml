@@ -1,7 +1,7 @@
 ---
 - name: Manage Ansible Project based on GitHub branch webhook
   hosts: localhost
-  gather_facts: false
+  gather_facts: true
   vars:
     scm_url: "https://github.com/your-org/your-repo.git"
     organization_id: 1
@@ -11,6 +11,10 @@
     my_branch: ""
 
   tasks:
+    - name: Show AAP Variables
+      ansible.builtin.debug:
+        var: hostvars[inventory_host]
+
     - name: This playbook expects to receive a GitHub webhook payload as awx_webhook_payload variable
       ansible.builtin.debug:
         msg: "This is the GitHub payload variable: {{ awx_webhook_payload.ref }}"
@@ -113,3 +117,39 @@
             'Created new project and triggered sync.'
           }}
 ...
+
+---
+- name: Extract testing_proj1 from GitHub PR payload
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    payload_file: "/mnt/data/output.json"
+
+  tasks:
+    - name: Load GitHub PR payload
+      slurp:
+        src: "{{ payload_file }}"
+      register: raw_payload
+
+    - name: Decode JSON
+      set_fact:
+        github_payload: "{{ raw_payload['content'] | b64decode | from_json }}"
+
+    # ✅ Easy way (direct JSON access)
+    - name: Get PR branch (easy way)
+      set_fact:
+        pr_branch_json: "{{ github_payload.msg | from_yaml | json_query('head.ref') }}"
+
+    - name: Show PR branch from JSON
+      debug:
+        msg: "Branch (json way): {{ pr_branch_json }}"
+
+    # ✅ Regex way (string scan)
+    - name: Extract PR branch using regex
+      set_fact:
+        pr_branch_regex: "{{ github_payload.msg | regex_search('\"ref\":\\s*\"([^\"]+)\"', '\\1') }}"
+
+    - name: Show PR branch from regex
+      debug:
+        msg: "Branch (regex way): {{ pr_branch_regex }}"

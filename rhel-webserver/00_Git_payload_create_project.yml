@@ -13,7 +13,7 @@
   tasks:
     - name: Show AAP Variables
       ansible.builtin.debug:
-        msg: "{{ hostvars[inventory_host] }}"
+        msg: "{{ hostvars[inventory_hostname] }}"
 
     - name: This playbook expects to receive a GitHub webhook payload as awx_webhook_payload variable
       ansible.builtin.debug:

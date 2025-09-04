@@ -117,39 +117,3 @@
             'Created new project and triggered sync.'
           }}
 ...
-
----
-- name: Extract testing_proj1 from GitHub PR payload
-  hosts: localhost
-  gather_facts: no
-
-  vars:
-    payload_file: "/mnt/data/output.json"
-
-  tasks:
-    - name: Load GitHub PR payload
-      slurp:
-        src: "{{ payload_file }}"
-      register: raw_payload
-
-    - name: Decode JSON
-      set_fact:
-        github_payload: "{{ raw_payload['content'] | b64decode | from_json }}"
-
-    # ✅ Easy way (direct JSON access)
-    - name: Get PR branch (easy way)
-      set_fact:
-        pr_branch_json: "{{ github_payload.msg | from_yaml | json_query('head.ref') }}"
-
-    - name: Show PR branch from JSON
-      debug:
-        msg: "Branch (json way): {{ pr_branch_json }}"
-
-    # ✅ Regex way (string scan)
-    - name: Extract PR branch using regex
-      set_fact:
-        pr_branch_regex: "{{ github_payload.msg | regex_search('\"ref\":\\s*\"([^\"]+)\"', '\\1') }}"
-
-    - name: Show PR branch from regex
-      debug:
-        msg: "Branch (regex way): {{ pr_branch_regex }}"
